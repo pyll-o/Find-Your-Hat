@@ -37,12 +37,10 @@ class Field {
         let coordinates = this.startPosition();
         do {
             this.print();
-            let direction = prompt('Which way (u/d/l/r)? ');
-            if (direction !== 'd' && direction !== 'u' && direction !== 'r' && direction !== 'l') {
-                do {
-                    direction = prompt('Which way (u/d/l/r)? ');
-                } while (direction !== 'd' && direction !== 'u' && direction !== 'r' && direction !== 'l');
-            };
+            let direction;
+            do {
+                direction = prompt('Which way (u/d/l/r)? ');
+            } while (direction !== 'd' && direction !== 'u' && direction !== 'r' && direction !== 'l');
             if (direction === 'd') {
                 coordinates.splice(0, 1, coordinates[0] + 1);            
             } else if (direction === 'u') {
@@ -72,11 +70,9 @@ class Field {
         let coordinates = this.startPosition();
         let difficulty = prompt('Select difficulty (1-10) ');
         let difficultyNum = parseInt(difficulty);
-        if (difficultyNum < 1 || difficultyNum > 10 || !difficultyNum) {
-            do {
-                difficulty = prompt(`Don't try to outsmart me! Select difficulty (1-10) `);
-                difficultyNum = parseInt(difficulty);
-            } while (difficultyNum < 1 || difficultyNum > 10 || !difficultyNum);
+        while (difficultyNum < 1 || difficultyNum > 10 || !difficultyNum) {
+            difficulty = prompt(`Don't try to outsmart me! Select difficulty (1-10) `);
+            difficultyNum = parseInt(difficulty);
         };
         do {
             let chance = Math.floor(Math.random() * (14 - difficultyNum));
@@ -90,12 +86,10 @@ class Field {
                 this.field[randomCoordinate[0]].splice(randomCoordinate[1], 1, hole);
             }
             this.print();
-            let direction = prompt('Which way (u/d/l/r)? ');
-            if (direction !== 'd' && direction !== 'u' && direction !== 'r' && direction !== 'l') {
-                do {
-                    direction = prompt('Which way (u/d/l/r)? ');
-                } while (direction !== 'd' && direction !== 'u' && direction !== 'r' && direction !== 'l');
-            }
+            let direction;
+            do {
+                direction = prompt('Which way (u/d/l/r)? ');
+            } while (direction !== 'd' && direction !== 'u' && direction !== 'r' && direction !== 'l');
             if (direction === 'd') {
                 coordinates.splice(0, 1, coordinates[0] + 1);            
             } else if (direction === 'u') {
@@ -147,49 +141,43 @@ class Field {
     }
     static generateField(height, width, percentageOfHoles) {
         let primeArr = [];
-    let fieldArr = [];
-    let primeArrLength = height * width;
-    for (let i = 0; i < primeArrLength; i++) {
-        primeArr.push(fieldCharacter);
-    }
-    let numberOfHoles = Math.floor(primeArrLength * percentageOfHoles / 100);
-    let startPosition = Math.floor(Math.random() * primeArrLength);
-    primeArr.splice(startPosition, 1, pathCharacter);
-    let hatPosition = Math.floor(Math.random() * primeArrLength);
-    if (hatPosition === startPosition) {
+        let fieldArr = [];
+        let primeArrLength = height * width;
+        for (let i = 0; i < primeArrLength; i++) {
+            primeArr.push(fieldCharacter);
+        };
+        let numberOfHoles = Math.floor(primeArrLength * percentageOfHoles / 100);
+        let startPosition = Math.floor(Math.random() * primeArrLength);
+        primeArr.splice(startPosition, 1, pathCharacter);
+        let hatPosition;
         do {
             hatPosition = Math.floor(Math.random() * primeArrLength);
         } while (hatPosition === startPosition);
-    }
-    primeArr.splice(hatPosition, 1, hat);
-    for (let j = 0; j < numberOfHoles; j++) {
-        let holePosition = Math.floor(Math.random() * primeArrLength);
-        if (primeArr[holePosition] !== fieldCharacter) {
+        primeArr.splice(hatPosition, 1, hat);
+        for (let j = 0; j < numberOfHoles; j++) {
+            let holePosition;        
             do {
                 holePosition = Math.floor(Math.random() * primeArrLength);
             } while (primeArr[holePosition] !== fieldCharacter);
+            primeArr.splice(holePosition, 1, hole);
         };
-        primeArr.splice(holePosition, 1, hole);
-    };
-    for (let k = 0; k < height; k++) {
-        let row = primeArr.slice(k * width, k * width + width);
-        fieldArr.push(row);
-    }
-    return fieldArr;
+        for (let k = 0; k < height; k++) {
+            let row = primeArr.slice(k * width, k * width + width);
+            fieldArr.push(row);
+        };
+        return fieldArr;
     }
 }
 
 const game = () => { 
     let myField = new Field(Field.generateField(10, 20, 30)); 
-    console.log('New field generated. Checking validity...')
+    console.log('New field generated. Checking validity...');
     if (myField.canFieldBeSolved()){
         console.log('Field validated.');
-        let easyOrHard = prompt('Game difficulty: easy (e) or hard (h)? ');
-        if (easyOrHard !== 'e' && easyOrHard !== 'h') {
-            do {
-                easyOrHard = prompt('Game difficulty: easy (e) or hard (h)? ');
-            } while (easyOrHard !== 'e' && easyOrHard !== 'h');
-        };
+        let easyOrHard;        
+        do {
+            easyOrHard = prompt('Game difficulty: easy (e) or hard (h)? ');
+        } while (easyOrHard !== 'e' && easyOrHard !== 'h');
         if (easyOrHard === 'e') {
             myField.play();
         } else if (easyOrHard === 'h') {
@@ -198,7 +186,7 @@ const game = () => {
     } else {
         console.log('Field invalid. Apologies. Trying again...');
         return false;
-    }
+    };
     return true;
 }
 
